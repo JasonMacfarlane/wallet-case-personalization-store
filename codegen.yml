@@ -1,0 +1,5 @@
+schema: ./types/download.json
+generates:
+  ./src/app/types/fragment.json:
+    plugins:
+      - fragment-matcher

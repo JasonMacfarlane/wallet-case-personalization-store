@@ -1,0 +1,7 @@
+<mat-nav-list class="sheet-list">
+  <a *ngFor="let bgColor of bgColors" mat-list-item (click)="setColor(bgColor)">
+    <span mat-line [ngStyle]="{'color': color, 'font-family': fontFamily}">
+      <span class="sheet-list__bg" [ngStyle]="{'background-color': bgColor}">{{ textValue }}</span>
+    </span>
+  </a>
+</mat-nav-list>

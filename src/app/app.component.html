@@ -1,0 +1,15 @@
+<div *ngIf="showLoaderSubject | async" class="loader">
+  <div class="loader__inner">
+    <mat-spinner class="loader__spinner" diameter="50"></mat-spinner>
+    <p><span class="loader__message" [innerHtml]="loaderMessageSubject | async"></span></p>
+  </div>
+</div>
+
+<header class="header">
+  <button mat-stroked-button *ngIf="!isRoot" (click)="close()">Back</button>
+  <img *ngIf="isRoot" class="header__logo" src="assets/img/logo.svg" alt="" height="22">
+  <div *ngIf="!isRoot" class="header__title">{{ title }}</div>
+  <button mat-flat-button color="primary" *ngIf="!isRoot" (click)="next()">Next</button>
+</header>
+
+<router-outlet></router-outlet>

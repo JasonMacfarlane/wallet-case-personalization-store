@@ -1,0 +1,105 @@
+<main id="main" class="main main--checkout" [ngStyle]="{'height': windowHeight}">
+  <div class="main__inner">
+    <ng-container *ngIf="!isComplete()">
+      <ng-container *ngIf="(checkout$ | async) as checkout">
+        <div class="back-link">
+          <div class="wrapper">
+            <button (click)="goBack()"><mat-icon matSuffix>chevron_left</mat-icon> Back</button>
+          </div>
+        </div>
+        
+        <div class="summary">
+          <button class="summary__header" (click)="collapseSummary = !collapseSummary">
+            <div class="wrapper">
+              <div class="summary__header__inner">
+                <div class="summary__header__title">
+                  <i class="material-icons">shopping_cart</i>
+                  <span>Show order summary</span>
+                  <i *ngIf="!collapseSummary" class="material-icons">keyboard_arrow_up</i>
+                  <i *ngIf="collapseSummary" class="material-icons">keyboard_arrow_down</i>
+                </div>
+                <div class="summary__header__price">${{ checkout.data.paymentDueV2.amount | number : '1.2-2' }}</div>
+              </div>
+            </div>
+          </button>
+
+          <div *ngIf="!collapseSummary" class="summary__info wrapper">
+            <div class="summary__product">
+              <div class="summary__product__img">
+                <img *ngIf="checkout.image" [src]="checkout.image" alt="">
+              </div>
+
+              <div class="summary__product__name">
+                {{ checkout.data.lineItems.edges[0].node.title }}
+
+                <div class="summary__product__device">{{ checkout.data.lineItems.edges[0].node.variant.title }}</div>
+              </div>
+
+              <div class="summary__product__price">
+                <div *ngIf="checkout.data.lineItems.edges[0].node.variant.compareAtPriceV2" class="summary__product__price__reg">${{ checkout.data.lineItems.edges[0].node.variant.compareAtPriceV2.amount | number : '1.2-2' }}</div>
+                <div class="summary__product__price__now">${{ checkout.data.lineItems.edges[0].node.variant.priceV2.amount | number : '1.2-2' }}</div>
+              </div>
+            </div>
+
+            <div class="summary__discount">
+              <form (ngSubmit)="applyDiscount()">
+                <input type="text" placeholder="Discount code" name="discountCode" [(ngModel)]="discountCode">
+                <button mat-flat-button color="primary" class="discount-btn" [disabled]="discountCode === ''">
+                  <span *ngIf="!(isDiscountApplying$ | async)">Apply</span>
+                  <mat-progress-spinner *ngIf="isDiscountApplying$ | async" class="btn-spinner" diameter="30" mode="indeterminate"></mat-progress-spinner>
+                </button>
+              </form>
+            </div>
+
+            <div class="summary__breakdown">
+              <div *ngIf="discountApplied$ | async as discount" class="summary__breakdown__row" style="color: green;">
+                <div class="summary__breakdown__title">Discount</div>
+                <div class="summary__breakdown__price">-${{ discount | number : '1.2-2' }}</div>
+              </div>
+
+              <div class="summary__breakdown__row">
+                <div class="summary__breakdown__title">Subtotal</div>
+                <div class="summary__breakdown__price">${{ checkout.data.subtotalPriceV2.amount | number : '1.2-2' }}</div>
+              </div>
+
+              <div class="summary__breakdown__row">
+                <div class="summary__breakdown__title">Tax</div>
+                <div class="summary__breakdown__price">
+                  <ng-container *ngIf="!checkout.data.shippingAddress">Calculated in next step</ng-container>
+                  <ng-container *ngIf="checkout.data.shippingAddress">${{ checkout.data.totalTaxV2.amount | number : '1.2-2' }}</ng-container>
+                </div>
+              </div>
+
+              <div class="summary__breakdown__row">
+                <div class="summary__breakdown__title">Express shipping</div>
+                <div class="summary__breakdown__price">Free</div>
+              </div>
+            </div>
+
+            <div class="summary__total">
+              <div class="summary__total__title">Total</div>
+              <div class="summary__total__price">
+                <span class="summary__total__currency">{{ checkout.data.paymentDueV2.currencyCode }}</span>${{ checkout.data.paymentDueV2.amount | number : '1.2-2' }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="wrapper">
+          <h1 class="h1">Checkout</h1>
+        </div>
+
+        <div class="wrapper">
+          <div class="breadcrumb">
+            <ul>
+              <li [ngClass]="{'active': getRouterUrl() === '/checkout/contact'}"><a routerLink="/checkout/contact">Information</a></li>
+              <li [ngClass]="{'active': getRouterUrl() === '/checkout/payment'}"><a routerLink="/checkout/payment">Payment</a></li>
+            </ul>
+          </div>
+        </div>
+      </ng-container>
+    </ng-container>
+
+    <router-outlet (activate)="onRouteChange()"></router-outlet>
+  </div>
+</main>

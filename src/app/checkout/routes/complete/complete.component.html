@@ -1,0 +1,8 @@
+<div class="wrapper">
+  <div class="text-center">
+    <h1>Thank you for your order!</h1>
+    <p class="mb-5">A confirmation email has been sent to {{ (checkout$ | async).data.email }}.</p>
+
+    <a mat-flat-button color="primary" href="/">Return to store</a>
+  </div>
+</div>

@@ -1,0 +1,5 @@
+<mat-nav-list class="sheet-list">
+  <a *ngFor="let fontFamily of fontFamilies" mat-list-item (click)="setFontFamily(fontFamily)">
+    <span mat-line [ngStyle]="{'font-family': fontFamily}">{{ textValue }}</span>
+  </a>
+</mat-nav-list>

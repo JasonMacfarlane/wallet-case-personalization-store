@@ -1,0 +1,31 @@
+<main id="main" class="main editor" [ngStyle]="{'height': windowHeight}">
+  <div class="preview">
+    <div #image class="text">
+      <canvas id="c"></canvas>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="slider">
+      <div class="slider__label">Text size</div>
+      <div class="slider__slider">
+        <mat-slider color="primary" [min]="fontSizeMin" [max]="fontSizeMax" [step]="1" [value]="textData ? textData.text.size : 0" (input)="updateFontSize($event)"></mat-slider>
+      </div>
+    </div>
+  </div>
+
+  <div class="transform-btns">
+    <button mat-button aria-label="Select font" (click)="openFontSheet($event)"><i class="material-icons">font_download</i><br>Font</button>
+    <button mat-button aria-label="Select text color" (click)="openTextColorSheet($event)"><i class="material-icons">colorize</i><br>Text color</button>
+    <button mat-button aria-label="Select background color" (click)="openBgColorSheet($event)"><i class="material-icons">color_lens</i><br>BG color</button>
+    <button mat-button aria-label="Toggle text visibility" (click)="toggleTextVisibility()">
+      <ng-container *ngIf="isTextHidden == false"><i class="material-icons">visibility_off</i><br>Hide Text</ng-container>
+      <ng-container *ngIf="isTextHidden == true"><i class="material-icons">visibility</i><br>Show Text</ng-container>
+    </button>
+  </div>
+
+  <mat-button-toggle-group name="fontStyle" aria-label="Font Style">
+    <mat-button-toggle [checked]="true" value="Front Side" (click)="toggleSide('front')">Front side</mat-button-toggle>
+    <mat-button-toggle value="Back side" (click)="toggleSide('back')">Back side</mat-button-toggle>
+  </mat-button-toggle-group>
+</main>

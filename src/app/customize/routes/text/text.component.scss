@@ -1,0 +1,42 @@
+.editor {
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  width: 100%;
+  z-index: 4;
+}
+
+.preview {
+  display: flex;
+  flex: 1;
+  position: relative;
+}
+
+.text {
+  background-color: #000;
+  flex: 1;
+  // height: 100%;
+  position: relative;
+  width: 100%;
+}
+
+.slider {
+  align-items: center;
+  display: flex;
+
+  &__label {
+    font-size: 1.6rem;
+    font-weight: 700;
+    padding-right: 25px;
+  }
+
+  &__slider {
+    flex: 1;
+  }
+}
+
+.transform-btns {
+  margin: 0.2rem 0 1rem 0;
+}

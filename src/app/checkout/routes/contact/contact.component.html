@@ -1,0 +1,121 @@
+<div class="wrapper">
+  <div class="express-checkout">
+    <span class="express-checkout__title">Express checkout</span>
+
+    <ngx-paypal [config]="payPalConfig"></ngx-paypal>
+
+    <div #payElement>
+      <!-- A Stripe Element will be inserted here. -->
+    </div>
+  </div>
+
+  <div class="or"><span>or</span></div>
+</div>
+
+<div class="wrapper">
+  <form class="form" [formGroup]="shippingFormGroup">
+    <div class="form__section">
+      <h2>Contact information</h2>
+
+      <ng-container *ngIf="!(isLoggedIn$ | async)">
+        <ng-container *ngIf="isGuest">
+          <p>Already have an account? <a href="javascript:void(0)" (click)="isGuest = false">Log in</a></p>
+
+          <mat-form-field appearance="outline" class="form__field">
+            <mat-label>Email</mat-label>
+            <input matInput type="email" formControlName="email" autocomplete="new-password">
+          </mat-form-field>
+
+          <mat-checkbox formControlName="acceptsMarketing" color="primary">Keep me up to date on news and exclusive offers</mat-checkbox>
+        </ng-container>
+
+        <ng-container *ngIf="!isGuest">
+          <p>Don’t have an account? <a href="javascript:void(0)" (click)="isGuest = true">Checkout as guest</a></p>
+
+          <mat-form-field appearance="outline" class="form__field">
+            <mat-label>Email</mat-label>
+            <input matInput type="email" formControlName="email" #email (keydown.enter)="login($event)" autocomplete="new-password">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form__field">
+            <mat-label>Password</mat-label>
+            <input matInput type="password" #password (keydown.enter)="login($event)" autocomplete="new-password">
+          </mat-form-field>
+
+          <button mat-flat-button color="primary" type="button" class="checkout-btn" (click)="login($event)">
+            <span *ngIf="!(isLoggingIn$ | async)">Login</span>
+            <mat-progress-spinner *ngIf="isLoggingIn$ | async" class="btn-spinner" diameter="30" mode="indeterminate"></mat-progress-spinner>
+          </button>
+
+          <p class="text-danger mt-4">{{ loginErrorMsg$ | async }}</p>
+        </ng-container>
+      </ng-container>
+
+      <ng-container *ngIf="isLoggedIn$ | async">
+        <mat-form-field appearance="outline" class="form__field">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" formControlName="email" autocomplete="new-password">
+        </mat-form-field>
+      </ng-container>
+    </div>
+
+    <div class="form__section">
+      <h2>Shipping address</h2>
+
+      <mat-form-field appearance="outline" class="form__field">
+        <mat-label>First name</mat-label>
+        <input matInput type="text" formControlName="firstName" autocomplete="new-password">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="form__field">
+        <mat-label>Last name</mat-label>
+        <input matInput type="text" formControlName="lastName" autocomplete="new-password" required>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="form__field">
+        <mat-label>Company (optional)</mat-label>
+        <input matInput type="text" formControlName="company" autocomplete="new-password">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="form__field">
+        <mat-label>Address</mat-label>
+        <input matInput type="text" [options]="optionsAutocomplete" ngx-google-places-autocomplete #placesRef="ngx-places" (onAddressChange)="handleAddressChange($event)" formControlName="address1" autocorrect="off" autocomplete="new-password" required>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="form__field">
+        <mat-label>Apartment, suite, etc. (optional)</mat-label>
+        <input matInput type="text" formControlName="address2" autocomplete="new-password">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="form__field">
+        <mat-label>City</mat-label>
+        <input matInput type="text" formControlName="city" autocomplete="new-password" required>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="form__field">
+        <mat-label>Country</mat-label>
+        <input matInput type="text" formControlName="country" autocomplete="new-password" required>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="form__field">
+        <mat-label>State/Province</mat-label>
+        <input matInput type="text" formControlName="province" autocomplete="new-password" required>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="form__field">
+        <mat-label>Postal code</mat-label>
+        <input matInput type="text" formControlName="zip" autocomplete="new-password" required>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="form__field">
+        <mat-label>Phone (optional)</mat-label>
+        <input matInput type="tel" formControlName="phone" autocomplete="new-password">
+      </mat-form-field>
+    </div>
+  </form>
+
+  <button mat-flat-button color="primary" class="checkout-btn" (click)="onSubmit()">
+    <span *ngIf="!isPreparingPayment">Continue to payment</span>
+    <mat-progress-spinner *ngIf="isPreparingPayment" class="btn-spinner" diameter="30" mode="indeterminate"></mat-progress-spinner>
+  </button>
+</div>

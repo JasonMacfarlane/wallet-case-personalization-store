@@ -1,0 +1,175 @@
+<div class="wrapper">
+  <div *ngIf="(checkout$ | async) as checkout" class="review">
+    <div class="review__row">
+      <div class="review__info">
+        <span class="review__title">Contact</span>
+        <span class="review__content">{{ checkout.data.email }}</span>
+      </div>
+
+      <div class="review__change"><a routerLink="/checkout/contact">Change</a></div>
+    </div>
+
+    <div class="review__row">
+      <div class="review__info">
+        <span class="review__title">Ship to</span>
+        <span class="review__content">
+          {{ checkout.data.shippingAddress.firstName }}&nbsp;{{ checkout.data.shippingAddress.lastName }}
+          <ng-container *ngIf="checkout.data.shippingAddress.company !== '' && checkout.data.shippingAddress.company !== null"><br>{{ checkout.data.shippingAddress.company }}</ng-container><br>
+          {{ checkout.data.shippingAddress.address1 }}
+          <ng-container *ngIf="checkout.data.shippingAddress.address2"><br>{{ checkout.data.shippingAddress.address2 }}</ng-container>
+          <br>{{ checkout.data.shippingAddress.city }},&nbsp;{{ checkout.data.shippingAddress.province }}&nbsp;&nbsp;{{ checkout.data.shippingAddress.zip }}
+          <br>{{ checkout.data.shippingAddress.country }}
+          <ng-container *ngIf="checkout.data.shippingAddress.phone !== '' && checkout.data.shippingAddress.phone !== null"><br>{{ checkout.data.shippingAddress.phone }}</ng-container><br>
+        </span>
+      </div>
+
+      <div class="review__change"><a routerLink="/checkout/contact">Change</a></div>
+    </div>
+
+    <div class="review__row">
+      <div class="review__info">
+        <span class="review__title">Method</span>
+        <span class="review__content">{{ checkout.data.shippingLine.title }}</span>
+      </div>
+    </div>
+  </div>
+
+  <form id="cc-form" class="form" [formGroup]="creditCardFormGroup">
+    <div class="form__section">
+      <h2>Payment</h2>
+      <p>All transactions are secure and encrypted.</p>
+
+      <mat-radio-group formControlName="gateway">
+        <div class="form__box">
+          <div class="form__box__radio">
+            <mat-radio-button #creditCardRadio value="credit-card" value="cc" color="primary">Credit Card</mat-radio-button>
+
+            <ul class="form__box__radio__logos">
+              <li [ngStyle]="{'opacity': (ccType === null || ccType === 'visa') ? '1' : '0.3'}">
+                <fa-icon [icon]="faCcVisa" style="color: #1a1f71"></fa-icon>
+              </li>
+              <li [ngStyle]="{'opacity': (ccType === null || ccType === 'mastercard') ? '1' : '0.3'}">
+                <fa-icon [icon]="faCcMastercard" style="color: #ff5f00"></fa-icon>
+              </li>
+              <li [ngStyle]="{'opacity': (ccType === null || ccType === 'amex') ? '1' : '0.3'}">
+                <fa-icon [icon]="faCcAmex" style="color: #376fb3"></fa-icon>
+              </li>
+            </ul>
+          </div>
+
+          <div *ngIf="creditCardRadio.checked" class="form__box__content">
+            <mat-form-field appearance="outline" class="form__field">
+              <mat-label>Name on card</mat-label>
+              <input matInput type="text" formControlName="name" required>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="form__field">
+              <mat-label>Card number</mat-label>
+              <input matInput type="text" mask="0000 0000 0000 0009 999" formControlName="number" (keyup)="ccInput()" required>
+              <mat-icon matSuffix>lock</mat-icon>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="form__field">
+              <mat-label>Expiration date (MM/YY)</mat-label>
+              <input matInput type="text" mask="00/00" formControlName="expiration" required>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="form__field">
+              <mat-label>Security code</mat-label>
+              <input matInput type="text" mask="0009" formControlName="code" required>
+            </mat-form-field>
+
+            <small class="input-hint">3- to 4-digit security code on the back of your card</small>
+          </div>
+        </div>
+
+        <div class="form__box">
+          <div class="form__box__radio">
+            <mat-radio-button #paypalRadio value="paypal" color="primary"><img src="assets/img/logo-paypal.svg" width="90"></mat-radio-button>
+          </div>
+
+          <ng-container *ngIf="payPalOrderId === null">
+            <div *ngIf="paypalRadio.checked" class="form__box__content">
+              <p><strong>Note:</strong> The shipping address you choose in PayPal will overwrite the shipping address above. Please ensure you select your correct shipping after clicking the PayPal button below.</p>
+            </div>
+          </ng-container>
+        </div>
+      </mat-radio-group>
+    </div>
+  </form>
+
+  <form id="billing-form" class="form" [formGroup]="billingFormGroup">
+    <div class="form__section">
+      <h2>Billing</h2>
+      <p>Select the address that matches your card or payment method.</p>
+
+      <mat-radio-group formControlName="addressToUse">
+        <div class="form__box">
+          <div class="form__box__radio">
+            <mat-radio-button value="shipping" color="primary">Same as shipping address</mat-radio-button>
+          </div>
+        </div>
+
+        <div class="form__box">
+          <div class="form__box__radio">
+            <mat-radio-button #billingAddressRadio value="new" color="primary">Use a different billing address</mat-radio-button>
+          </div>
+
+          <div *ngIf="billingAddressRadio.checked" class="form__box__content">
+            <mat-form-field appearance="outline" class="form__field">
+              <mat-label>First name</mat-label>
+              <input matInput type="text" formControlName="firstName" autocomplete="new-password">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="form__field">
+              <mat-label>Last name</mat-label>
+              <input matInput type="text" formControlName="lastName" autocomplete="new-password" required>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="form__field">
+              <mat-label>Company (optional)</mat-label>
+              <input matInput type="text" formControlName="company" autocomplete="new-password">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="form__field">
+              <mat-label>Address</mat-label>
+              <input matInput type="text" [options]="optionsAutocomplete" ngx-google-places-autocomplete #placesRef="ngx-places" (onAddressChange)="handleAddressChange($event)" formControlName="address1" autocorrect="off" autocomplete="new-password" required>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="form__field">
+              <mat-label>Apartment, suite, etc. (optional)</mat-label>
+              <input matInput type="text" formControlName="address2" autocomplete="new-password">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="form__field">
+              <mat-label>City</mat-label>
+              <input matInput type="text" formControlName="city" autocomplete="new-password" required>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="form__field">
+              <mat-label>Country</mat-label>
+              <input matInput type="text" formControlName="country" autocomplete="new-password" required>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="form__field">
+              <mat-label>State/Province</mat-label>
+              <input matInput type="text" formControlName="province" autocomplete="new-password" required>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="form__field">
+              <mat-label>Postal code</mat-label>
+              <input matInput type="text" formControlName="zip" autocomplete="new-password" required>
+            </mat-form-field>
+          </div>
+        </div>
+      </mat-radio-group>
+    </div>
+  </form>
+
+  <button [hidden]="(creditCardFormGroup.getRawValue().gateway === 'paypal' && payPalOrderId === null)" mat-flat-button color="primary" class="checkout-btn" (click)="onSubmit()">
+    <span *ngIf="!isPreparingOrder">Complete order</span>
+    <mat-progress-spinner *ngIf="isPreparingOrder" class="btn-spinner" diameter="30" mode="indeterminate"></mat-progress-spinner>
+  </button>
+
+  <ngx-paypal [hidden]="(creditCardFormGroup.getRawValue().gateway === 'paypal' && payPalOrderId !== null) || creditCardFormGroup.getRawValue().gateway !== 'paypal'" [config]="payPalConfig"></ngx-paypal>
+</div>

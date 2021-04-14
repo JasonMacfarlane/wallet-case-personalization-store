@@ -1,0 +1,42 @@
+<main id="main" class="main editor" [ngStyle]="{'height': windowHeight}">
+  <div #cropper class="cropper" [ngStyle]="{'opacity': (showCropper$ | async) ? '1' : '0'}">
+    <img #cropperImage [src]="imageUrl | async" alt="" style="max-width: 100%">
+  </div>
+
+  <div class="util">
+    <mat-button-toggle-group class="util__btns">
+      <mat-button-toggle [checked]="style === 'mirror'" aria-label="Mirror mode" (click)="updateAspectRatio('mirror')">Mirror</mat-button-toggle>
+      <mat-button-toggle [checked]="style === 'repeat'" aria-label="Repeat mode" (click)="updateAspectRatio('repeat')">Repeat</mat-button-toggle>
+      <mat-button-toggle [checked]="style === 'full'" aria-label="Full mode" (click)="updateAspectRatio('full')">Full</mat-button-toggle>
+    </mat-button-toggle-group>
+
+    <div class="hint">
+      <p *ngIf="style === 'mirror'">Repeat on the front and back, but mirrored. <br> <strong>Recommended.</strong></p>
+      <p *ngIf="style === 'repeat'">Repeat on the front and&nbsp;back.</p>
+      <p *ngIf="style === 'full'">Cover the entire case (front and&nbsp;back).</p>
+    </div>
+
+    <div #editorPreview class="preview">
+      <div class="preview__inner" [ngClass]="{'preview__inner--show': style === 'mirror'}">
+        <div class="preview__img preview__img--mirror"></div>
+        <div class="preview__img preview__img--mirror"></div>
+      </div>
+
+      <div class="preview__inner" [ngClass]="{'preview__inner--show': style === 'repeat'}">
+        <div class="preview__img preview__img--repeat"></div>
+        <div class="preview__img preview__img--repeat"></div>
+      </div>
+
+      <div class="preview__inner preview__inner--full" [ngClass]="{'preview__inner--show': style === 'full'}">
+        <div class="preview__img preview__img--full"></div>
+      </div>
+    </div>
+
+    <div class="transform-btns">
+      <button mat-button aria-label="Flip horizontal" (click)="flipH()"><i class="material-icons">flip</i><br>Flip H</button>
+      <button mat-button aria-label="Flip vertical" (click)="flipV()"><i class="material-icons" style="transform: rotate(90deg)">flip</i><br>Flip V</button>
+      <button mat-button aria-label="Rotate left" (click)="rotateLeft()"><i class="material-icons">rotate_left</i><br>Left</button>
+      <button mat-button aria-label="Rotate right" (click)="rotateRight()"><i class="material-icons">rotate_right</i><br>Right</button>
+    </div>
+  </div>
+</main>
