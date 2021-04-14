@@ -73,6 +73,7 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 2. Replace `API_KEY` with your Google API key in `index.html`.
 
 <a name="customized-checkout">
+
 ## Customized Checkout
 
 The problem with Shopify's default checkout is that the product image is fixed. This becomes an issue when customers are personalizing a product. It would be nice for customers to see their *actual* product in the checkout, instead of a default placeholder product. This increases confidence and confirms what they're purchasing.
