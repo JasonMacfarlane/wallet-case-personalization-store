@@ -10,7 +10,7 @@ Since COVID-19, shipping from China using WC Fulfillment has been too slow, so I
 
 **Note: This web app is made specifically for mobile devices and does not fit a desktop screen.**
 
-**Check out the live [demo](https://sunday-cases.herokuapp.com/).**
+**Check out the live [demo](https://sunday-cases.herokuapp.com/). The demo could be slow on initial load, because it’s currently using Heroku’s free plan, which sleeps when inactive. The app is actually very fast when doesn’t sleep.**
 
 ### Niche examples
 
